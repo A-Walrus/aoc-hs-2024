@@ -7,6 +7,7 @@ import Control.Exception (SomeException, try)
 import Data.Bifunctor
 import Debug.Trace
 import GHC.IO (catch)
+import Data.List (tails)
 
 debug :: (Show a) => String -> a -> a
 debug s v = trace (s ++ ": " ++ show v) v
@@ -20,6 +21,17 @@ add a = uncurry bimap (dMap (+) a)
 
 scale :: Pos -> Int -> Pos
 scale (x, y) n = (x * n, y * n)
+
+zipNext :: [a] -> [(a, a)]
+zipNext l@(_ : rest) = zip l rest
+
+zipWithNext :: (a->a->b) -> [a] -> [b]
+zipWithNext f l@(_ : rest) = zipWith f l rest
+
+windows :: Int -> [a] -> [[a]]
+windows n xs
+  | n > 0 = takeWhile ((== n) . length) $ map (take n) (tails xs)
+  | otherwise = error "Window size must be greater than 0"
 
 y :: Pos -> Int
 y = snd
