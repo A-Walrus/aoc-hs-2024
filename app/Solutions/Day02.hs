@@ -25,15 +25,6 @@ safe l = all gradInc (diffs l) || all gradDec (diffs l)
 diffs = zipWithNext (-)
 
 part2 :: Parsed -> Int
-part2 = length . filter slow
+part2 = length . filter safeish
   where
-    slow l = safe l || any ((\(a, b : rest) -> safe (a ++ rest)) . (`splitAt` l)) [0 .. (length l - 1)]
-
--- safish l@(x : _) = f gradInc (x - 1 : l) True || f gradDec (x + 1 : l) True
-
--- f :: (Int -> Bool) -> [Int] -> Bool -> Bool
--- f cond [] _ = True
--- f cond [_] _ = True
--- f cond [a, b, c] True = cond (a - b)
--- f cond (a : b : c : rest) True = (cond (a - b) && f cond (b : c : rest) True) || (cond (a - c) && f cond (c : rest) False)
--- f cond (a : b : rest) canUse = cond (a - b) && f cond (b : rest) canUse
+    safeish l = safe l || any ((\(a, b : rest) -> safe (a ++ rest)) . (`splitAt` l)) [0 .. (length l - 1)]
